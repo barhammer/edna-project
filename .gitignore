@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Conda / environments
+miniconda3/
+.env
+.venv
+
+# Data (never commit raw sequencing data)
+data/
+*.fastq
+*.fq
+*.fastq.gz
+*.fq.gz
+
+# Outputs / results
+outputs/
+results/
+logs/
+
+# OS junk
+.DS_Store
+Thumbs.db
