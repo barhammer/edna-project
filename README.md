@@ -51,7 +51,7 @@ The goal is to provide a **reproducible, cross-platform setup** so all team memb
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/<your-username>/edna-project.git
+git clone https://github.com/barhammer/edna-project.git
 cd edna-project
 ```
 
@@ -148,7 +148,7 @@ This project is licensed under the **MIT License**.
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/<your-username>/edna-project.git
+git clone https://github.com/barhammer/edna-project.git
 cd edna-project
 ```
 
