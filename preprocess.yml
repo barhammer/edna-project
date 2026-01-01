@@ -1,0 +1,22 @@
+name: prepro
+
+channels:
+  - conda-forge
+  - bioconda
+
+dependencies:
+  - python=3.10
+
+  # QC & trimming
+  - fastqc
+  - cutadapt
+
+  # R + DADA2
+  - r-base
+  - bioconductor-dada2
+
+  # CRITICAL: TBB ABI pin (fixes undefined symbol error)
+  - tbb=2021.10.*
+
+  # Utilities
+  - seqkit

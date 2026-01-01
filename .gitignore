@@ -1,25 +1,42 @@
+# --------------------
 # Python
+# --------------------
 __pycache__/
 *.pyc
 .ipynb_checkpoints/
 
+# --------------------
 # Conda / environments
+# --------------------
 miniconda3/
 .env
 .venv
 
-# Data (never commit raw sequencing data)
-data/
+# --------------------
+# Raw sequencing data (never commit)
+# --------------------
 *.fastq
-*.fq
 *.fastq.gz
+*.fq
 *.fq.gz
 
-# Outputs / results
+# --------------------
+# Derived data & QC outputs
+# --------------------
+data/raw_fastq/
+data/trimmed/
+data/merged/
+data/qc/
+
+# --------------------
+# Results / outputs
+# --------------------
 outputs/
 results/
 logs/
 
+# --------------------
 # OS junk
+# --------------------
 .DS_Store
 Thumbs.db
