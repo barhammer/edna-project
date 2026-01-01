@@ -1,52 +1,60 @@
 # EDNA Project
 
-This repository contains the code and environment setup for an **eDNA (environmental DNA) analysis project**, focusing on data preprocessing, clustering, and exploratory analysis using Python and bioinformatics tools.
+This repository contains the code and environment setup for an **eDNA (environmental DNA) analysis project**, covering **raw sequencing preprocessing**, **clustering**, and **downstream exploratory analysis**.
 
-The goal is to provide a **reproducible, cross-platform setup** so all team members can run the same pipeline with minimal friction.
+The goal is to provide a **reproducible, low-friction workflow** so all team members can run the same pipeline reliably, even if they work on different stages of the project.
+
+---
+
+## Overview
+
+The project is intentionally split into **two stages**, each with its own Conda environment:
+
+1. **Preprocessing stage**
+   Raw FASTQ → QC → trimmed reads / ASVs / OTUs
+2. **Analysis stage**
+   Feature tables → clustering → visualization / ML
+
+Not every user needs to run both stages.
 
 ---
 
 ## Requirements
 
-### Operating system
+### Operating System
 
 * **Linux** or **macOS**
 * **Windows users must use WSL2 (Ubuntu)**
 
-> Native Windows is not supported for some bioinformatics tools used in this project.
+> Native Windows is not supported for several bioinformatics tools used here.
 
 ### Software
 
-* Miniconda / Conda
-* Git
-
----# EDNA Project
-
-This repository contains the code and environment setup for an **eDNA (environmental DNA) analysis project**, focusing on data preprocessing, clustering, and exploratory analysis using Python and bioinformatics tools.
-
-The goal is to provide a **reproducible, cross-platform setup** so all team members can run the same pipeline with minimal friction.
-
----
-
-## Requirements
-
-### Operating system
-
-* **Linux** or **macOS**
-* **Windows users must use WSL2 (Ubuntu)**
-
-> Native Windows is not supported for some bioinformatics tools used in this project.
-
----
-
-### Software
-
-* **Miniconda / Conda**
 * **Git**
+* **Miniconda / Conda**
 
 ---
 
-## Setup Instructions
+## Repository Structure
+
+```
+edna-project/
+├── preprocess.yml        # Conda env for FASTQ preprocessing (FastQC, fastp, vsearch, DADA2)
+├── environment.yml       # Conda env for analysis & ML
+├── data/                 # Data directory (raw + intermediate data; not tracked)
+│   ├── raw_fastq/        # Raw FASTQ files (user-provided)
+│   ├── trimmed/          # Trimmed FASTQs (generated)
+│   └── qc/               # QC reports (generated)
+├── scripts/              # Pipeline and analysis scripts
+├── README.md
+└── LICENSE
+```
+
+> **Important:** Raw sequencing data and generated outputs are intentionally **not tracked in Git**.
+
+---
+
+## Quick Start
 
 ### 1. Clone the repository
 
@@ -57,74 +65,108 @@ cd edna-project
 
 ---
 
-### 2. Create the conda environment
+## Environment Setup (Important)
+
+This project uses **two Conda environments**.
+You only need to install the environment relevant to the stage you are running.
+
+---
+
+## Environment 1: Preprocessing (FASTQ → cleaned reads)
+
+### Who needs this?
+
+* Anyone starting from **raw sequencing data (FASTQ)**
+* Anyone running **FastQC, fastp, vsearch, or DADA2**
+
+### Create the preprocessing environment
+
+```bash
+conda env create -f preprocess.yml
+```
+
+### Activate it
+
+```bash
+conda activate prepro
+```
+
+### (Optional) Verify installation
+
+```bash
+fastqc --version
+fastp --version
+vsearch --version
+R -q -e "library(dada2)"
+```
+
+---
+
+## Environment 2: Analysis & Clustering
+
+### Who needs this?
+
+* Anyone working from **feature tables / abundance matrices**
+* Anyone doing **clustering, visualization, or ML**
+
+### Create the analysis environment
 
 ```bash
 conda env create -f environment.yml
 ```
 
-> This installs all required Python libraries and bioinformatics tools.
-
----
-
-### 3. Activate the environment
+### Activate it
 
 ```bash
 conda activate edna
 ```
 
----
-
-### 4. Verify installation (recommended)
+### (Optional) Verify installation
 
 ```bash
-python -c "import numpy, pandas, torch, hdbscan, umap"
-fastp --version
-vsearch --version
-seqkit version
+python -c "import numpy, pandas, sklearn, umap, hdbscan"
 ```
-
-If these commands run without errors, the environment is set up correctly.
 
 ---
 
-## Project Structure
+## Data Input Convention
 
-```text
-edna-project/
-├── environment.yml      # Conda environment definition
-├── README.md            # Project documentation
-├── data/                # Raw input data (ignored by Git)
-├── scripts/             # Analysis and preprocessing scripts
-├── outputs/             # Generated results (ignored by Git)
-└── notebooks/           # Exploratory notebooks
+Users should place their raw paired-end FASTQ files here:
+
+```
+data/raw_fastq/
+├── sample_1.fastq.gz
+├── sample_2.fastq.gz
 ```
 
-> **Important:**
-> Raw sequencing data and generated outputs are **not tracked** in Git.
+Downstream outputs will be written automatically to:
+
+* `data/qc/`
+* `data/trimmed/`
+* (later) feature tables / clustering outputs
 
 ---
 
 ## Notes for Windows Users
 
 * Install **WSL2 with Ubuntu**
-* Run all commands inside the Ubuntu terminal
-* VS Code with the **Remote – WSL** extension is recommended
+* Run **all commands inside the Ubuntu terminal**
+* VS Code with the **Remote – WSL** extension is strongly recommended
 
 ---
 
-## Dependency Management (Important)
+## Dependency Management (Very Important)
 
-* All dependencies are defined in `environment.yml`
-* **Do not install packages manually** using `pip install` or `conda install`
-* **Do not export environments using `conda env export`**
+* **All dependencies must be declared** in the appropriate YAML file
+* Do **not** install packages manually using `pip install` or `conda install`
+* Do **not** run `conda env export`
 
 If a new dependency is required:
 
 1. Discuss it with the team
-2. Add it manually to `environment.yml`
-3. Recreate the environment if needed
-4. Commit the updated `environment.yml`
+2. Add it explicitly to the correct YAML file
+3. Recreate the environment
+4. Commit the updated YAML file
 
 This ensures everyone stays on the same, stable setup.
 
@@ -133,90 +175,9 @@ This ensures everyone stays on the same, stable setup.
 ## Contributing Guidelines
 
 * Commit small, logical changes
-* Do not commit raw data or large output files
-* Keep notebooks exploratory; move finalized logic into scripts
-
----
-
-## License
-
-This project is licensed under the **MIT License**.
-
-
-## Setup Instructions
-
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/barhammer/edna-project.git
-cd edna-project
-```
-
----
-
-### 2. Create the conda environment
-
-```bash
-conda env create -f environment.yml
-```
-
----
-
-### 3. Activate the environment
-
-```bash
-conda activate edna
-```
-
----
-
-### 4. Verify installation (optional)
-
-```bash
-python -c "import numpy, pandas, torch, hdbscan, umap"
-fastp --version
-vsearch --version
-seqkit version
-```
-
-If these commands run without errors, the environment is set up correctly.
-
----
-
-## Project Structure
-
-```text
-edna-project/
-├── environment.yml      # Conda environment definition
-├── README.md            # Project documentation
-├── data/                # Raw input data (ignored by Git)
-├── scripts/             # Analysis and preprocessing scripts
-├── outputs/             # Generated results (ignored by Git)
-└── notebooks/           # Exploratory notebooks
-```
-
-> **Important:**
-> Raw sequencing data and generated outputs are **not tracked** in Git.
-
----
-
-## Notes for Windows Users
-
-* Install **WSL2 with Ubuntu**
-* Run all commands inside the Ubuntu terminal
-* Use VS Code with the **Remote – WSL** extension (recommended)
-
----
-
-## Contributing
-
-* Commit small, logical changes
-* Do not commit raw data or large output files
-* If you add a new dependency:
-
-  1. Install it in the `edna` environment
-  2. Re-export `environment.yml`
-  3. Commit the updated file
+* Never commit raw sequencing data or large output files
+* Keep exploratory work in notebooks
+* Move finalized logic into scripts
 
 ---
 
